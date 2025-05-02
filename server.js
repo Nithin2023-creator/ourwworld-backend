@@ -17,14 +17,10 @@ const auth = require('./middleware/auth');
 const app = express();
 const server = http.createServer(app);
 
-// Get the client URL from env var with localhost fallback
-const clientUrl = process.env.CLIENT_URL || "http://localhost:3000";
-console.log('Setting up CORS for client URL:', clientUrl);
-
-// Socket.io setup with CORS configured for local development
+// Socket.io setup with CORS allowing all origins
 const io = socketIo(server, {
   cors: {
-    origin: [clientUrl],
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"]
@@ -34,7 +30,7 @@ const io = socketIo(server, {
 
 // Middleware
 app.use(cors({
-  origin: clientUrl,
+  origin: "*",
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token', 'Access-Control-Allow-Headers'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
