@@ -33,14 +33,14 @@ const DEFAULT_TODOS = {
   panda: [
     { text: 'Breakfast', isDefault: true },
     { text: 'Lunch', isDefault: true },
-    { text: 'Dinner', isDefault: true },
-    { text: 'Daily Walk', isDefault: true }
+    { text: 'Walk', isDefault: true },
+    { text: 'Dinner', isDefault: true }
   ],
   bear: [
     { text: 'Breakfast', isDefault: true },
     { text: 'Lunch', isDefault: true },
-    { text: 'Dinner', isDefault: true },
-    { text: 'Daily Walk', isDefault: true }
+    { text: 'Walk', isDefault: true },
+    { text: 'Dinner', isDefault: true }
   ]
 };
 
