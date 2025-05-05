@@ -12,6 +12,15 @@ const Message = require('../models/Message');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
 
+// Check if web-push is installed
+try {
+  require('web-push');
+  console.log('Web Push library is available');
+} catch (error) {
+  console.error('Web Push library is not installed. Mobile push notifications will not work.');
+  console.error('Install it with: npm install web-push');
+}
+
 const app = express();
 
 // Middleware
@@ -56,6 +65,18 @@ app.use('/api/gallery', require('../routes/gallery'));
 app.use('/api/chat', require('../routes/chat'));
 app.use('/api/notes', require('../routes/notes'));
 app.use('/api/todos', require('../routes/todos'));
+app.use('/api/notifications', require('../routes/notifications'));
+
+// Add endpoint to get VAPID public key
+app.get('/api/vapid-public-key', (req, res) => {
+  if (!process.env.VAPID_PUBLIC_KEY) {
+    return res.status(500).json({ 
+      message: 'VAPID keys not configured. Mobile notifications not available.' 
+    });
+  }
+  
+  res.json({ vapidPublicKey: process.env.VAPID_PUBLIC_KEY });
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {

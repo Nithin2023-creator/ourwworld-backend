@@ -1,6 +1,16 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
+// Schema for push subscription
+const pushSubscriptionSchema = new mongoose.Schema({
+  endpoint: String,
+  expirationTime: Number,
+  keys: {
+    p256dh: String,
+    auth: String
+  }
+}, { _id: false });
+
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -20,6 +30,26 @@ const userSchema = new mongoose.Schema({
   lastLogin: {
     type: Date,
     default: Date.now
+  },
+  // Push notification subscriptions
+  pushSubscriptions: {
+    type: [pushSubscriptionSchema],
+    default: []
+  },
+  // User notification preferences
+  notificationPreferences: {
+    newNotes: {
+      type: Boolean,
+      default: true
+    },
+    newGalleryImages: {
+      type: Boolean,
+      default: true
+    },
+    newTodos: {
+      type: Boolean,
+      default: true
+    }
   }
 }, {
   timestamps: true
