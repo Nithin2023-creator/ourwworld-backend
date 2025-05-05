@@ -3,6 +3,15 @@ const router = express.Router();
 const Note = require('../models/Note');
 const auth = require('../middleware/auth');
 
+// Store a reference to the io instance (will be set by server.js)
+let io;
+
+// Set the io instance for broadcasting note updates
+router.setIo = function(ioInstance) {
+  io = ioInstance;
+  console.log('Socket.io instance set for notes routes');
+};
+
 // Get all notes
 router.get('/', auth, async (req, res) => {
   try {
@@ -19,6 +28,13 @@ router.post('/', auth, async (req, res) => {
     const { text } = req.body;
     const note = new Note({ text });
     await note.save();
+    
+    // Broadcast the new note
+    if (io) {
+      io.emit('newNote', note);
+      console.log('Broadcast new note to all clients');
+    }
+    
     res.status(201).json(note);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });

@@ -5,6 +5,15 @@ const cloudinary = require('cloudinary').v2;
 const Gallery = require('../models/Gallery');
 const auth = require('../middleware/auth');
 
+// Store a reference to the io instance (will be set by server.js)
+let io;
+
+// Set the io instance for broadcasting gallery updates
+router.setIo = function(ioInstance) {
+  io = ioInstance;
+  console.log('Socket.io instance set for gallery routes');
+};
+
 // Configure Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -53,6 +62,13 @@ router.post('/upload', auth, upload.single('image'), async (req, res) => {
     });
 
     await image.save();
+    
+    // Broadcast the new image
+    if (io) {
+      io.emit('newGalleryImage', image);
+      console.log('Broadcast new gallery image to all clients');
+    }
+    
     res.status(201).json(image);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });

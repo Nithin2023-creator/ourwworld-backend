@@ -142,8 +142,10 @@ const notesRoutes = require('./routes/notes');
 const todosRoutes = require('./routes/todos');
 const testRoutes = require('./routes/testRoute');
 
-// Set io instance for todos routes
+// Set io instance for routes
 todosRoutes.setIo(io);
+notesRoutes.setIo(io);
+galleryRoutes.setIo(io);
 
 // Routes
 app.use('/api/auth', authRoutes);
